@@ -11,7 +11,7 @@ As mentioned earlier blah blah blah. add text later.
 SQL, Java, UML
 
 ## What we’re the biggest challenges?
-SQL and programmic access
+SQL and programmic access.
 
 ## What did you learn from it?
 SQL and programmic access

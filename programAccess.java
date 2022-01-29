@@ -36,15 +36,15 @@ public class programAccess {
     case 3 {
       System.out.println("You picked 'Terminate rental.'");
       System.out.println("Please state the studentID:");
-      int studentID = scan.next();
+      int studentId = scan.next();
       if(/*Student has a rental*/) {
         System.out.println("The student has rented the following instruments:");
         for(){
-          System.out.println(/*INSTRUMENTID*/)
+          System.out.println(/*INSTRUMENTId*/)
         } 
         System.out.println("Please state which rental you want to terminate:")
-        int instrumentID = scan.next();
-        terminateRental(studentID, instrumentID)
+        int instrumentId = scan.next();
+        terminateRental(studentId, instrumentId)
       } else System.out.println("the student has not rented an instrument, please try again.");
     }
   }
@@ -73,11 +73,18 @@ public class programAccess {
   }
 
   public void rentInstruments() {
-    int numOfRentals;
+    try {
+      addRentalForStudent.setString(1, studentId);
+      addRentalForStudent.setString(2, instrumentId);
+      connection.commit();
+
+    } catch (SQLEception throwables) {
+      handleDatabaseException("Could not rent instrument", throwables)
+    }
   }
 
   public void terminateRental(int studentId, int instrumentId) {
-    instrumentID.status = terminated
+    instrumentId.status = terminated
     studentID =
 
   }

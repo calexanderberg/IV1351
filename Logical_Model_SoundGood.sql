@@ -21,7 +21,7 @@ CREATE TABLE pricing (
 
 CREATE TABLE student (
  student_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  nr_of_siblings VARCHAR(50),
  guardian_id VARCHAR(500) NOT NULL
 );
@@ -31,7 +31,7 @@ ALTER TABLE student ADD CONSTRAINT PK_student PRIMARY KEY (student_id,personal_i
 
 CREATE TABLE instructor (
  instructor_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  employment_id VARCHAR(500) NOT NULL,
  instrument_skill VARCHAR(50) NOT NULL,
  nr_of_lesson VARCHAR(50),
@@ -43,7 +43,7 @@ ALTER TABLE instructor ADD CONSTRAINT PK_instructor PRIMARY KEY (instructor_id,p
 
 CREATE TABLE payment (
  student_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  amount VARCHAR(500) NOT NULL,
  rental_instrument VARCHAR(500)
 );
@@ -54,7 +54,7 @@ ALTER TABLE payment ADD CONSTRAINT PK_payment PRIMARY KEY (student_id,personal_i
 CREATE TABLE rental_instrument (
  instrument_id VARCHAR(500) NOT NULL,
  student_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  type_instrument VARCHAR(100),
  is_rented VARCHAR(10),
  quantity VARCHAR(10),
@@ -69,7 +69,7 @@ ALTER TABLE rental_instrument ADD CONSTRAINT PK_rental_instrument PRIMARY KEY (i
 
 CREATE TABLE salary (
  instructor_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  amount VARCHAR(500),
  employment_id VARCHAR(500)
 );
@@ -80,7 +80,7 @@ ALTER TABLE salary ADD CONSTRAINT PK_salary PRIMARY KEY (instructor_id,personal_
 CREATE TABLE Schedule (
  lesson_type VARCHAR(50) NOT NULL,
  student_id INT NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  instructor_id INT NOT NULL,
  lesson_time TIMESTAMP(6) NOT NULL,
  lesson_date DATE NOT NULL
@@ -91,7 +91,7 @@ ALTER TABLE Schedule ADD CONSTRAINT PK_Schedule PRIMARY KEY (lesson_type,student
 
 CREATE TABLE booking (
  type_of_lesson VARCHAR(500) NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  student_id INT NOT NULL,
  instructor_id INT NOT NULL,
  booking_time TIMESTAMP(6) NOT NULL,
@@ -105,7 +105,7 @@ ALTER TABLE booking ADD CONSTRAINT PK_booking PRIMARY KEY (type_of_lesson,person
 CREATE TABLE ensemble (
  skill_level VARCHAR(500) NOT NULL,
  type_of_lesson VARCHAR(500) NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  student_id INT NOT NULL,
  instructor_id INT NOT NULL,
  instuctor_id VARCHAR(100) NOT NULL,
@@ -124,7 +124,7 @@ ALTER TABLE ensemble ADD CONSTRAINT PK_ensemble PRIMARY KEY (skill_level,type_of
 CREATE TABLE group_lesson (
  skill_level VARCHAR(500) NOT NULL,
  type_of_lesson VARCHAR(500) NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  student_id INT NOT NULL,
  instructor_id INT NOT NULL,
  instuctor_id VARCHAR(500) NOT NULL,
@@ -140,7 +140,7 @@ ALTER TABLE group_lesson ADD CONSTRAINT PK_group_lesson PRIMARY KEY (skill_level
 CREATE TABLE individual_lesson (
  skill_level VARCHAR(50) NOT NULL,
  type_of_lesson VARCHAR(500) NOT NULL,
- personal_id INT NOT NULL,
+ personal_id VARCHAR(500) NOT NULL,
  student_id INT NOT NULL,
  instructor_id_0 INT NOT NULL,
  instructor_id VARCHAR(500) NOT NULL,
