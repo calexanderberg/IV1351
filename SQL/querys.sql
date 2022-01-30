@@ -36,7 +36,7 @@ SELECT * FROM time_report WHERE count > 2;
 
 --query 4)
 
-SELECT * FROM ( SELECT max_seats, nr_of_students,
+SELECT * FROM ( SELECT max_seats, nr_of_students,lesson_date ,
 CASE
 WHEN max_seats=nr_of_students THEN 'FULLY BOOKED'
 WHEN 2 = max_seats-nr_of_students THEN 'FEW SEATS LEFT'
@@ -45,7 +45,3 @@ ELSE 'JOIN'
 END AS is_available FROM ensemble)
 ensemble
 WHERE EXTRACT('week' FROM lesson_date)=EXTRACT('week' FROM current_date + interval '1 week');
-
-
-
-
