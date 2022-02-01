@@ -9,7 +9,7 @@ public class Main {
     private static PreparedStatement nrRentalsSTM;
     private static PreparedStatement addRentalSTM;
     private static PreparedStatement revertSTM;
-    private static PreparedStatement getStudIdSTM;
+    private static PreparedStatement getStudentIdSTM;
     private static PreparedStatement addHistorySTM;
 
     public Connection accessDB() throws SQLException, ClassNotFoundException {
@@ -42,8 +42,14 @@ public class Main {
 
             case 1:
                 System.out.println("You picked 'List of available instruments by type.'");
-                System.out.println("Choose instrument out of the following:" +
-                        "\n \n \n \n \n \n \n");
+                System.out.println("Choose instrument out of the following:\n" +
+                        "harp\n" +
+                        "saxophone\n" +
+                        "guitar\n" +
+                        "ukelele\n" +
+                        "bongo drums\n" +
+                        "violin\n" +
+                        "keyboard \n");
                 printInstrumentType(input.next());
                 break;
 
@@ -67,9 +73,9 @@ public class Main {
                 System.out.println("Please state the instrumentID:");
                 terminateRental(input.nextInt(),c);
                 break;
-
         }
     }
+
     
     // Main functions of the program
 
@@ -102,7 +108,7 @@ public class Main {
     }
 
     private static void terminateRental(int instrumentID,Connection c) throws SQLException {
-        int studId = getStudId(instrumentID);
+        int studId = getStudentId(instrumentID);
         revert(instrumentID,c);
         addHistorySTM.setInt(1,instrumentID);
         addHistorySTM.setInt(2,studId);
@@ -110,8 +116,9 @@ public class Main {
         c.commit();
     }
 
-    // Side functions to help navigate with the SQL
     
+    // Side functions to help navigate with the SQL
+
     public static ResultSet availableInstruments(String inst) throws SQLException{
         getAvailInsSTM.setString(1,inst);
         return getAvailInsSTM.executeQuery();
@@ -127,14 +134,14 @@ public class Main {
         nrRentalsSTM.setInt(1,id);
         return nrRentalsSTM.executeQuery();
     }
-    
-    private static int getStudId(int instID) throws SQLException{
-        getStudIdSTM.setInt(1,instID);
-        ResultSet r = getStudIdSTM.executeQuery();
-        r.next();
-        return r.getInt(8);
+
+    private static int getStudentId(int instID) throws SQLException{
+        getStudentIdSTM.setInt(1,instID);
+        ResultSet rental = getStudentIdSTM.executeQuery();
+        rental.next();
+        return rental.getInt(8);
     }
-    
+
     private static void revert(int instId,Connection c) throws SQLException {
         revertSTM.setInt(1, instId);
         revertSTM.executeUpdate();
@@ -149,7 +156,7 @@ public class Main {
         addRentalSTM = c.prepareStatement("update rental_instrument set is_rented = TRUE, student_id = ? where instrument_id = ?");
         getAvailInsSTM = c.prepareStatement("select * from rental_instrument where is_rented = FALSE and type_instrument = ? ");
         getAllSTM = c.prepareStatement("select * from rental_instrument where is_rented = TRUE");
-        getStudIdSTM = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
+        getStudentIdSTM = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
         nrRentalsSTM = c.prepareStatement("select count(*) from rental_instrument where student_id = ?");
         revertSTM = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
         }
