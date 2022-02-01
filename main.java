@@ -5,223 +5,152 @@ import java.util.Scanner;
 public class Main {
 
     private static PreparedStatement getAvailInsSTM;
-    private static PreparedStatement getallSTM;
-    private static PreparedStatement nrRentalsSTM; //nr of rentals per student
-    private static PreparedStatement addRentalSTM; //nr of rentals per student
-    private static PreparedStatement revertSTM; //gör så att instrumentet blir unrented true -> false
-    private static PreparedStatement getStudIdSTM; //hömtar student id för terminate och lägger till history
-    private static PreparedStatement addHistorySTM;    //private PreparedStatement;
+    private static PreparedStatement getAllSTM;
+    private static PreparedStatement nrRentalsSTM;
+    private static PreparedStatement addRentalSTM;
+    private static PreparedStatement revertSTM;
+    private static PreparedStatement getStudIdSTM;
+    private static PreparedStatement addHistorySTM;
 
     public Connection accessDB() throws SQLException, ClassNotFoundException {
-      Class.forName("org.postgresql.Driver");
-      return DriverManager.getConnection("jdbc:postgresql://localhost:5432/sg", "test", "test");
+        Class.forName("org.postgresql.Driver");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/sg","test", "test");
     }
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-
-        Scanner scan = new Scanner(System.in);  
-        System.out.println("Welcome to the Soundgood music school's website.");  
-        Scanner db = new Scanner(System.in);
-
-//Below is not my code
+        Scanner scan = new Scanner(System.in);
         Connection c = new Main().accessDB();
         c.setAutoCommit(false);
         Statement stmt = c.createStatement();
-        prepareStatements(c);
-//end
+        preparedStatements(c);
 
-        //Scanner in = new Scanner(System.in);
-        boolean status = true;
-        while(status) {
-            System.out.println("\nWe are able to do the following:");
-            System.out.println("1: List all instruments. \n2: Rent instruments. \n3: Terminate rental.\n 4. To end the program");
-            System.out.println("What would you like to do? Please pick a number.");
-            int choice = scan.next();
-            
-            switch (choice){
-                default:
-                    System.out.println("Error, incorect value. \n Please write a correct value");
-                    break;
+        System.out.println("Welcome to the SoundGood music school's website.");
+        System.out.println("We are able to do the following:");
+        System.out.println(
+                        "1: List of available instruments by type.\n" +
+                        "2: Show rented instruments.\n" +
+                        "3: Add rental.\n" +
+                        "4: Terminate rental.");
+        System.out.println("What would you like to do? Please pick a number.");
+        int choice = scan.nextInt();
 
-                case 1:
-                    Scanner instrument_Type = new Scanner(System.in);
-                    System.out.println("You picked 'List all instruments.'");
-                    System.out.println("Which instrument would you like to list?");
-                    rentalPrint(instrument_Type.next());
-                    break;
+        Scanner input = new Scanner(System.in);
+        switch (choice){
+            default:
+                System.out.println("ERROR: Number does not exist, please choose a number between 1 to 5.");
+                break;
 
-                case "show":
-                    showRented();
-                    break;
-                    
-                case 2:
-                    System.out.println("You picked 'Rent instruments.'");
-                    System.out.println("Please state the studentID:");
-                    int student_ID = scan.next();
-                    System.out.println("Please state the instrumentID:");
-                    int instrument_Id2 = scan.next();
-                    rentInstruments(student_ID,instrument_Id2, c);
-                    break;
+            case 1:
+                System.out.println("You picked 'List of available instruments by type.'");
+                System.out.println("Choose instrument out of the following:" +
+                        "\n \n \n \n \n \n \n");
+                printInstrumentType(input.next());
+                break;
 
-                case 3:
-                    Scanner instrumentId3 = new Scanner(System.in);
-                    System.out.println("You picked 'Terminate rental.'");
-                    System.out.println("Please state the instrument ID which you want to terminate:")
-                    terminate(instrumentId3.nextInt(),c);
-                    break;
-                
-                case 4:
-                    System.out.println("You picked 'Quit program.'");
-                    System.out.println("Bye Bye");
-                    status=false
-                    break;
-                }
-            }
-        }
+            case 2:
+                System.out.println("You picked 'Show rented instruments.'");
+                System.out.println("The list of instruments is shown below:");
+                printAllRentals();
+                break;
 
+            case 3:
+                System.out.println("You picked 'Add rental.'");
+                System.out.println("Please state the studentID:");
+                int studentID = input.nextInt();
+                System.out.println("Please state the instrumentID:");
+                int instrumentID = input.nextInt();
+                addRental(studentID, instrumentID, c);
+                break;
 
+            case 4:
+                System.out.println("You picked 'Terminate rental.'");
+                System.out.println("Please state the instrumentID:");
+                terminateRental(input.nextInt(),c);
+                break;
 
-    private static void rentInstruments(int studID, int instID,Connection c) throws SQLException {
-        if (nrRental(studID) == 2){
-            System.out.println("Student has already the maximum amount of rentals");
-        }
-        else{
-            addrentals(studID,instID,c);
-        }
-
-    }
-
-    private static void showRented() throws SQLException {
-            ResultSet r = getall();
-            while (r.next()){
-                System.out.println("StudentID: " + r.getString("student_id") + " IntrumentID: " + r.getString("id") );
-            }
-    }
-
-    private static void rentalPrint(String inst) throws SQLException {
-        ResultSet r = getAvailIns(inst);
-            System.out.println("--------------------------------------------------");
-        while (r.next()){
-            System.out.println("Brand: " + r.getString("brand")
-                    + " price: " + r.getString("price"));
-            }
-            System.out.println("---------------------------------------------------");
-        }
-
-    private static boolean checkTable(Connection c, String s) throws SQLException {
-        DatabaseMetaData metaData= c.getMetaData();
-        ResultSet tablemMetaData=metaData.getTables(null,null,null,null);
-        while(tablemMetaData.next()){
-            String tableName=tablemMetaData.getString(3);
-            if(tableName.equals(s))
-                return true;
-                }
-        return false;
-        }
-
-    private static void printTable(Statement s) throws SQLException {
-        ResultSet r = s.executeQuery("select * from ensemble");
-        while (r.next()){
-            System.out.println("ensembleID: " + r.getString(3));
         }
     }
-    private static int nrRental(int id) throws SQLException {
-        ResultSet r = nrRentals(id);
-        r.next();
-        return r.getInt(1);
-    }
+    
+    // Main functions of the program
 
-//------------------------------------------------------------------------------------------------------------
-    // STATEMENTS
-    public static ResultSet getAvailIns(String inst){
-        try{
-            getAvailInsSTM.setString(1,inst);
-            return getAvailInsSTM.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    private static ResultSet getall(){
-        try {
-            return getallSTM.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+    private static void printInstrumentType(String instrument) throws SQLException {
+        ResultSet rental = availableInstruments(instrument);
+        while (rental.next()){
+            System.out.println("Type of Instrument: " + rental.getString("type_instrument") +
+                            " | Instrument ID: "+ rental.getString("instrument_id") +
+                            " | Price: " + rental.getString("monthly_fee") + ":- per month");
         }
     }
 
-    private static ResultSet nrRentals(int id){
-        try {
-            nrRentalsSTM.setInt(1,id);
-            return nrRentalsSTM.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+    private static void printAllRentals() throws SQLException {
+        ResultSet rental = getAllSTM.executeQuery();
+        while (rental.next()) {
+            System.out.println("StudentID: " + rental.getString("student_id") +
+                            " | InstrumentID: " + rental.getString("instrument_id"));
         }
     }
 
-    private static void addrentals(int studID, int instID,Connection c) {
-        try{
+    private static void addRental(int studID, int instID,Connection c) throws SQLException {
+        if (nrRental((studID)) == 2 ) {
+            System.out.println("The maximum amount of rental has been reached for this student.");
+        } else {
             addRentalSTM.setInt(1,studID);
             addRentalSTM.setInt(2,instID);
             addRentalSTM.executeUpdate();
             c.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-    private static int getStudId(int instID) {
-        try{
-            getStudIdSTM.setInt(1,instID);
-            ResultSet r = getStudIdSTM.executeQuery();
-            r.next();
-            return r.getInt(6);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-    private static void revert(int instId,Connection c)  {
-        try {
-            revertSTM.setInt(1, instId);
-            revertSTM.executeUpdate();
-            c.commit();
-            } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    private static void terminate(int instId,Connection c) {
-        int studId = getStudId(instId);
-        revert(instId,c);
-        try{
-            addHistorySTM.setInt(1,instId);
-            addHistorySTM.setInt(2,studId);
-            addHistorySTM.executeUpdate();
-            c.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static void terminateRental(int instrumentID,Connection c) throws SQLException {
+        int studId = getStudId(instrumentID);
+        revert(instrumentID,c);
+        addHistorySTM.setInt(1,instrumentID);
+        addHistorySTM.setInt(2,studId);
+        addHistorySTM.executeUpdate();
+        c.commit();
+    }
+
+    // Side functions to help navigate with the SQL
+    
+    public static ResultSet availableInstruments(String inst) throws SQLException{
+        getAvailInsSTM.setString(1,inst);
+        return getAvailInsSTM.executeQuery();
+    }
+
+    private static int nrRental(int id) throws SQLException {
+        ResultSet rental = nrRentals(id);
+        rental.next();
+        return rental.getInt(1);
+    }
+
+    private static ResultSet nrRentals(int id) throws SQLException{
+        nrRentalsSTM.setInt(1,id);
+        return nrRentalsSTM.executeQuery();
+    }
+    
+    private static int getStudId(int instID) throws SQLException{
+        getStudIdSTM.setInt(1,instID);
+        ResultSet r = getStudIdSTM.executeQuery();
+        r.next();
+        return r.getInt(8);
+    }
+    
+    private static void revert(int instId,Connection c) throws SQLException {
+        revertSTM.setInt(1, instId);
+        revertSTM.executeUpdate();
+        c.commit();
+    }
+
+
+    // Prepared statements for our SQL.
+
+    private static void preparedStatements(Connection c) throws SQLException {
+        addHistorySTM = c.prepareStatement("insert into renting_history(rented_instrument_id,return_date,student_id) values(?,CURRENT_DATE,?)");
+        addRentalSTM = c.prepareStatement("update rental_instrument set is_rented = TRUE, student_id = ? where instrument_id = ?");
+        getAvailInsSTM = c.prepareStatement("select * from rental_instrument where is_rented = FALSE and type_instrument = ? ");
+        getAllSTM = c.prepareStatement("select * from rental_instrument where is_rented = TRUE");
+        getStudIdSTM = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
+        nrRentalsSTM = c.prepareStatement("select count(*) from rental_instrument where student_id = ?");
+        revertSTM = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
         }
-
-    }
-
-
-    private static void prepareStatements(Connection c) throws SQLException {
-
-        getAvailInsSTM = c.prepareStatement("select * from instrument_renting where is_rented = FALSE and instrument = ? ");
-
-        getallSTM = c.prepareStatement("select * from instrument_renting where is_rented = TRUE");
-
-        nrRentalsSTM = c.prepareStatement("select count(*) from instrument_renting where student_id = ?");
-
-        addRentalSTM = c.prepareStatement("update instrument_renting set is_rented = TRUE, student_id = ? where id = ?");
-
-        revertSTM = c.prepareStatement("update instrument_renting set is_rented = FALSE, student_id = null where id = ?");
-
-        getStudIdSTM = c.prepareStatement("select *  from instrument_renting where id = ? ");
-
-        addHistorySTM = c.prepareStatement("insert into instrument_renting_history(instrument_renting_id,return_date,student_id) values(?,CURRENT_DATE,?)");
-    }
-
 }
