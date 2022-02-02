@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static PreparedStatement getAvailInsSTM;
-    private static PreparedStatement getAllSTM;
-    private static PreparedStatement nrRentalsSTM;
-    private static PreparedStatement addRentalSTM;
-    private static PreparedStatement revertSTM;
-    private static PreparedStatement getStudentIdSTM;
-    private static PreparedStatement addHistorySTM;
+    private static PreparedStatement getAvailabilityInstrumentStatement;
+    private static PreparedStatement getAllStatement;
+    private static PreparedStatement numberOfRentalsStatement;
+    private static PreparedStatement addRentalStatement;
+    private static PreparedStatement revertStatement;
+    private static PreparedStatement getStudentIdStatement;
+    private static PreparedStatement addHistoryStatement;
 
     public Connection accessDB() throws SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
@@ -21,7 +21,7 @@ public class Main {
         Scanner scan = new Scanner(System.in);
         Connection c = new Main().accessDB();
         c.setAutoCommit(false);
-        Statement stmt = c.createStatement();
+        Statement Statementt = c.createStatement();
         preparedStatements(c);
 
         System.out.println("Welcome to the SoundGood music school's website.");
@@ -89,20 +89,20 @@ public class Main {
     }
 
     private static void printAllRentals() throws SQLException {
-        ResultSet rental = getAllSTM.executeQuery();
+        ResultSet rental = getAllStatement.executeQuery();
         while (rental.next()) {
             System.out.println("StudentID: " + rental.getString("student_id") +
                             " | InstrumentID: " + rental.getString("instrument_id"));
         }
     }
 
-    private static void addRental(int studID, int instID,Connection c) throws SQLException {
-        if (nrRental((studID)) == 2 ) {
+    private static void addRental(int studentID, int instrumentID,Connection c) throws SQLException {
+        if (numberRental((studentID)) == 2 ) {
             System.out.println("The maximum amount of rental has been reached for this student.");
         } else {
-            addRentalSTM.setInt(1,studID);
-            addRentalSTM.setInt(2,instID);
-            addRentalSTM.executeUpdate();
+            addRentalStatement.setInt(1,studentID);
+            addRentalStatement.setInt(2,instrumentID);
+            addRentalStatement.executeUpdate();
             c.commit();
         }
     }
@@ -110,9 +110,9 @@ public class Main {
     private static void terminateRental(int instrumentID,Connection c) throws SQLException {
         int studId = getStudentId(instrumentID);
         revert(instrumentID,c);
-        addHistorySTM.setInt(1,instrumentID);
-        addHistorySTM.setInt(2,studId);
-        addHistorySTM.executeUpdate();
+        addHistoryStatement.setInt(1,instrumentID);
+        addHistoryStatement.setInt(2,studId);
+        addHistoryStatement.executeUpdate();
         c.commit();
     }
 
@@ -120,31 +120,31 @@ public class Main {
     // Side functions to help navigate with the SQL
 
     public static ResultSet availableInstruments(String inst) throws SQLException{
-        getAvailInsSTM.setString(1,inst);
-        return getAvailInsSTM.executeQuery();
+        getAvailabilityInstrumentStatement.setString(1,inst);
+        return getAvailabilityInstrumentStatement.executeQuery();
     }
 
-    private static int nrRental(int id) throws SQLException {
-        ResultSet rental = nrRentals(id);
+    private static int numberRental(int id) throws SQLException {
+        ResultSet rental = numberRentals(id);
         rental.next();
         return rental.getInt(1);
     }
 
-    private static ResultSet nrRentals(int id) throws SQLException{
-        nrRentalsSTM.setInt(1,id);
-        return nrRentalsSTM.executeQuery();
+    private static ResultSet numberRentals(int id) throws SQLException{
+        numberOfRentalsStatement.setInt(1,id);
+        return numberOfRentalsStatement.executeQuery();
     }
 
     private static int getStudentId(int instID) throws SQLException{
-        getStudentIdSTM.setInt(1,instID);
-        ResultSet rental = getStudentIdSTM.executeQuery();
+        getStudentIdStatement.setInt(1,instID);
+        ResultSet rental = getStudentIdStatement.executeQuery();
         rental.next();
         return rental.getInt(8);
     }
 
-    private static void revert(int instId,Connection c) throws SQLException {
-        revertSTM.setInt(1, instId);
-        revertSTM.executeUpdate();
+    private static void revert(int instrumentId,Connection c) throws SQLException {
+        revertStatement.setInt(1, instrumentId);
+        revertStatement.executeUpdate();
         c.commit();
     }
 
@@ -152,12 +152,12 @@ public class Main {
     // Prepared statements for our SQL.
 
     private static void preparedStatements(Connection c) throws SQLException {
-        addHistorySTM = c.prepareStatement("insert into renting_history(rented_instrument_id,return_date,student_id) values(?,CURRENT_DATE,?)");
-        addRentalSTM = c.prepareStatement("update rental_instrument set is_rented = TRUE, student_id = ? where instrument_id = ?");
-        getAvailInsSTM = c.prepareStatement("select * from rental_instrument where is_rented = FALSE and type_instrument = ? ");
-        getAllSTM = c.prepareStatement("select * from rental_instrument where is_rented = TRUE");
-        getStudentIdSTM = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
-        nrRentalsSTM = c.prepareStatement("select count(*) from rental_instrument where student_id = ?");
-        revertSTM = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
+        addHistoryStatement = c.prepareStatement("insert into renting_history(rented_instrument_id,return_date,student_id) values(?,CURRENT_DATE,?)");
+        addRentalStatement = c.prepareStatement("update rental_instrument set is_rented = TRUE, student_id = ? where instrument_id = ?");
+        getAvailabilityInstrumentStatement = c.prepareStatement("select * from rental_instrument where is_rented = FALSE and type_instrument = ? ");
+        getAllStatement = c.prepareStatement("select * from rental_instrument where is_rented = TRUE");
+        getStudentIdStatement = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
+        numberOfRentalsStatement = c.prepareStatement("select count(*) from rental_instrument where student_id = ?");
+        revertStatement = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
         }
 }

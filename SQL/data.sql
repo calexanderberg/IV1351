@@ -70,8 +70,6 @@ insert into student (student_id, nr_of_siblings, guardian_id, personal_id) value
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1244', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='840-15-0154'), (SELECT person.personal_id FROM person WHERE person.personal_id='369-42-6910'));
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1740', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='442-90-7354'), (SELECT person.personal_id FROM person WHERE person.personal_id='186-97-7638'));
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1821', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='348-02-1865'), (SELECT person.personal_id FROM person WHERE person.personal_id='579-64-5745'));
-insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1814', '0', (SELECT person.personal_id FROM person WHERE person.personal_id='334-71-0878'), (SELECT person.personal_id FROM person WHERE person.personal_id='500-57-8450'));
-insert into student (student_id, nr_of_siblings. guardian_id, personal_id) values ('1692', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='483-85-1069'), (SELECT person.personal_id FROM person WHERE person.personal_id='750-64-2961'));
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1237', '3', (SELECT person.personal_id FROM person WHERE person.personal_id='504-55-3598'), (SELECT person.personal_id FROM person WHERE person.personal_id='648-14-6857'));
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1558', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='476-94-7634'), (SELECT person.personal_id FROM person WHERE person.personal_id='364-20-1158'));
 insert into student (student_id, nr_of_siblings, guardian_id, personal_id) values ('1642', '1', (SELECT person.personal_id FROM person WHERE person.personal_id='372-62-1718'), (SELECT person.personal_id FROM person WHERE person.personal_id='130-59-3967'));
@@ -104,7 +102,7 @@ insert into instructor (instructor_id, instrument_skill,  prefered_class, person
 
 
 -- rental instruments
-insert into rental_instrument (instrument_id, type_instrument, is_rented, quantity, monthly_fee) values (1, 'harp', false, 5, '150kr')
+insert into rental_instrument (instrument_id, type_instrument, is_rented, quantity, monthly_fee) values (1, 'harp', false, 5, '150kr');
 insert into rental_instrument (instrument_id, type_instrument, is_rented, quantity, monthly_fee) values (2, 'keyboard', false, 4, '160kr');
 insert into rental_instrument (instrument_id, type_instrument, is_rented, quantity, monthly_fee) values (3, 'saxophone', false, 3, '270kr');
 insert into rental_instrument (instrument_id, type_instrument, is_rented, quantity, monthly_fee) values (4, 'guitar', false, 3, '80kr');
