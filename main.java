@@ -8,7 +8,7 @@ public class Main {
     private static PreparedStatement getAllStatement;
     private static PreparedStatement numberOfRentalsStatement;
     private static PreparedStatement addRentalStatement;
-    private static PreparedStatement revertStatement;
+    private static PreparedStatement terminateStatement;
     private static PreparedStatement getStudentIdStatement;
     private static PreparedStatement addHistoryStatement;
 
@@ -100,18 +100,22 @@ public class Main {
         if (numberRental((studentID)) == 2 ) {
             System.out.println("The maximum amount of rental has been reached for this student.");
         } else {
-            addRentalStatement.setInt(1,studentID);
-            addRentalStatement.setInt(2,instrumentID);
-            addRentalStatement.executeUpdate();
-            c.commit();
+            try{
+                addRentalStatement.setInt(1,studentID);     
+                addRentalStatement.setInt(2,instrumentID);
+                addRentalStatement.executeUpdate();
+                c.commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private static void terminateRental(int instrumentID,Connection c) throws SQLException {
-        int studId = getStudentId(instrumentID);
-        revert(instrumentID,c);
+        int studentId = getStudentId(instrumentID);
+        terminate(instrumentID,c);
         addHistoryStatement.setInt(1,instrumentID);
-        addHistoryStatement.setInt(2,studId);
+        addHistoryStatement.setInt(2,studentId);
         addHistoryStatement.executeUpdate();
         c.commit();
     }
@@ -142,9 +146,9 @@ public class Main {
         return rental.getInt(8);
     }
 
-    private static void revert(int instrumentId,Connection c) throws SQLException {
-        revertStatement.setInt(1, instrumentId);
-        revertStatement.executeUpdate();
+    private static void terminate(int instrumentId,Connection c) throws SQLException {
+        terminateStatement.setInt(1, instrumentId);
+        terminateStatement.executeUpdate();
         c.commit();
     }
 
@@ -158,6 +162,6 @@ public class Main {
         getAllStatement = c.prepareStatement("select * from rental_instrument where is_rented = TRUE");
         getStudentIdStatement = c.prepareStatement("select * from rental_instrument where instrument_id = ? ");
         numberOfRentalsStatement = c.prepareStatement("select count(*) from rental_instrument where student_id = ?");
-        revertStatement = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
+        terminateStatement = c.prepareStatement("update rental_instrument set is_rented = FALSE, student_id = null where instrument_id = ?");
         }
 }
