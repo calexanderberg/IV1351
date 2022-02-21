@@ -75,9 +75,16 @@ public class Main {
                     terminateRental(input.nextInt(), c);
                     break;
             }
-        }
-        catch(SgDBException e) {
+        } e.printStackTrace();
+        catch(SgDBException e)  {
             e.printStackTrace();
+            try {
+                transaction.Rollback();
+            }
+            catch (Exception ex2)
+            {
+                ex2.printStackTrace();
+            }
         }
     }
 
