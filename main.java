@@ -75,7 +75,7 @@ public class Main {
                     terminateRental(input.nextInt(), c);
                     break;
             }
-        } e.printStackTrace();
+        } 
         catch(SgDBException e)  {
             e.printStackTrace();
             try {
