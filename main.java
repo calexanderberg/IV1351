@@ -17,62 +17,67 @@ public class Main {
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/sg","test", "test");
     }
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Scanner scan = new Scanner(System.in);
-        Connection c = new Main().accessDB();
-        c.setAutoCommit(false);
-        Statement Statementt = c.createStatement();
-        preparedStatements(c);
+    public static void main(String[] args) throws SgDBException, SQLException, ClassNotFoundException {
+        try {
+            Scanner scan = new Scanner(System.in);
+            Connection c = new Main().accessDB();
+            c.setAutoCommit(false);
+            Statement Statementt = c.createStatement();
+            preparedStatements(c);
 
-        System.out.println("Welcome to the SoundGood music school's website.");
-        System.out.println("We are able to do the following:");
-        System.out.println(
-                        "1: List of available instruments by type.\n" +
-                        "2: Show rented instruments.\n" +
-                        "3: Add rental.\n" +
-                        "4: Terminate rental.");
-        System.out.println("What would you like to do? Please pick a number.");
-        int choice = scan.nextInt();
+            System.out.println("Welcome to the SoundGood music school's website.");
+            System.out.println("We are able to do the following:");
+            System.out.println(
+                    "1: List of available instruments by type.\n" +
+                            "2: Show rented instruments.\n" +
+                            "3: Add rental.\n" +
+                            "4: Terminate rental.");
+            System.out.println("What would you like to do? Please pick a number.");
+            int choice = scan.nextInt();
 
-        Scanner input = new Scanner(System.in);
-        switch (choice){
-            default:
-                System.out.println("ERROR: Number does not exist, please choose a number between 1 to 5.");
-                break;
+            Scanner input = new Scanner(System.in);
+            switch (choice) {
+                default:
+                    System.out.println("ERROR: Number does not exist, please choose a number between 1 to 5.");
+                    break;
 
-            case 1:
-                System.out.println("You picked 'List of available instruments by type.'");
-                System.out.println("Choose instrument out of the following:\n" +
-                        "harp\n" +
-                        "saxophone\n" +
-                        "guitar\n" +
-                        "ukelele\n" +
-                        "bongo drums\n" +
-                        "violin\n" +
-                        "keyboard \n");
-                printInstrumentType(input.next());
-                break;
+                case 1:
+                    System.out.println("You picked 'List of available instruments by type.'");
+                    System.out.println("Choose instrument out of the following:\n" +
+                            "harp\n" +
+                            "saxophone\n" +
+                            "guitar\n" +
+                            "ukelele\n" +
+                            "bongo drums\n" +
+                            "violin\n" +
+                            "keyboard \n");
+                    printInstrumentType(input.next());
+                    break;
 
-            case 2:
-                System.out.println("You picked 'Show rented instruments.'");
-                System.out.println("The list of instruments is shown below:");
-                printAllRentals();
-                break;
+                case 2:
+                    System.out.println("You picked 'Show rented instruments.'");
+                    System.out.println("The list of instruments is shown below:");
+                    printAllRentals();
+                    break;
 
-            case 3:
-                System.out.println("You picked 'Add rental.'");
-                System.out.println("Please state the studentID:");
-                int studentID = input.nextInt();
-                System.out.println("Please state the instrumentID:");
-                int instrumentID = input.nextInt();
-                addRental(studentID, instrumentID, c);
-                break;
+                case 3:
+                    System.out.println("You picked 'Add rental.'");
+                    System.out.println("Please state the studentID:");
+                    int studentID = input.nextInt();
+                    System.out.println("Please state the instrumentID:");
+                    int instrumentID = input.nextInt();
+                    addRental(studentID, instrumentID, c);
+                    break;
 
-            case 4:
-                System.out.println("You picked 'Terminate rental.'");
-                System.out.println("Please state the instrumentID:");
-                terminateRental(input.nextInt(),c);
-                break;
+                case 4:
+                    System.out.println("You picked 'Terminate rental.'");
+                    System.out.println("Please state the instrumentID:");
+                    terminateRental(input.nextInt(), c);
+                    break;
+            }
+        }
+        catch(SgDBException e) {
+            e.printStackTrace();
         }
     }
 
