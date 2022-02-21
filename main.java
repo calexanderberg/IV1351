@@ -18,20 +18,20 @@ public class Main {
     }
 
     public static void main(String[] args) throws SgDBException, SQLException, ClassNotFoundException {
-        try {
-            Scanner scan = new Scanner(System.in);
-            Connection c = new Main().accessDB();
-            c.setAutoCommit(false);
-            Statement Statementt = c.createStatement();
-            preparedStatements(c);
+        Scanner scan = new Scanner(System.in);
+        Connection c = new Main().accessDB();
+        c.setAutoCommit(false);
+        Statement Statementt = c.createStatement();
+        preparedStatements(c);
 
+        try {
             System.out.println("Welcome to the SoundGood music school's website.");
             System.out.println("We are able to do the following:");
             System.out.println(
                     "1: List of available instruments by type.\n" +
-                            "2: Show rented instruments.\n" +
-                            "3: Add rental.\n" +
-                            "4: Terminate rental.");
+                    "2: Show rented instruments.\n" +
+                    "3: Add rental.\n" +
+                    "4: Terminate rental.");
             System.out.println("What would you like to do? Please pick a number.");
             int choice = scan.nextInt();
 
@@ -76,13 +76,12 @@ public class Main {
                     break;
             }
         } 
-        catch(SgDBException e)  {
+        catch(SQLException e)  {
             e.printStackTrace();
             try {
-                c.Rollback();
+                c.rollback();
             }
-            catch (Exception ex2)
-            {
+            catch (Exception ex2){
                 ex2.printStackTrace();
             }
         }
