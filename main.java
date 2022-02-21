@@ -79,7 +79,7 @@ public class Main {
         catch(SgDBException e)  {
             e.printStackTrace();
             try {
-                transaction.Rollback();
+                c.Rollback();
             }
             catch (Exception ex2)
             {
